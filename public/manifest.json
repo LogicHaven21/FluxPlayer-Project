@@ -1,0 +1,40 @@
+{
+  "name": "FluxPlayer Pro",
+  "short_name": "FluxPlayer",
+  "start_url": "./index.html",
+  "display": "standalone",
+  "background_color": "#0f172a",
+  "theme_color": "#0f172a",
+  "description": "A professional, offline-capable video player for your local files.",
+  "orientation": "any",
+  "icons": [
+    {
+      "src": "https://cdn-icons-png.flaticon.com/512/2504/2504929.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "https://cdn-icons-png.flaticon.com/512/2504/2504929.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any maskable"
+    }
+  ],
+  "screenshots": [
+    {
+      "src": "https://images.unsplash.com/photo-1611162617474-5b21e879e113?w=800&q=80",
+      "sizes": "800x600",
+      "type": "image/jpg",
+      "form_factor": "wide",
+      "label": "Desktop View"
+    },
+    {
+      "src": "https://images.unsplash.com/photo-1611162616475-46b635cb6868?w=400&q=80",
+      "sizes": "400x800",
+      "type": "image/jpg",
+      "form_factor": "narrow",
+      "label": "Mobile View"
+    }
+  ]
+}

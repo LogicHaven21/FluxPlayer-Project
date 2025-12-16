@@ -1,0 +1,28 @@
+{
+  "name": "fluxplayer-pro",
+  "version": "1.0.0",
+  "description": "A professional, offline-capable PWA video player with advanced subtitle support and local history management.",
+  "main": "public/index.html",
+  "scripts": {
+    "start": "npx serve public",
+    "dev": "npx serve public"
+  },
+  "keywords": [
+    "video-player",
+    "pwa",
+    "offline",
+    "local-player",
+    "plyr",
+    "subtitle-converter",
+    "srt-to-vtt"
+  ],
+  "author": "FluxPlayer Team",
+  "license": "MIT",
+  "private": true,
+  "devDependencies": {
+    "serve": "^14.2.0"
+  },
+  "engines": {
+    "node": ">=14.0.0"
+  }
+}
