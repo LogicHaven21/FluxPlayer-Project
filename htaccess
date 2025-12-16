@@ -1,0 +1,22 @@
+<IfModule mod_rewrite.c>
+    RewriteEngine On
+    
+    # 1. اگر کاربر وارد صفحه اصلی شد، فایل public/index.html را نشان بده
+    # بدون اینکه URL تغییر کند
+    RewriteRule ^$ public/index.html [L]
+
+    # 2. اگر در URL کلمه index.html بود، آن را حذف کن (برای زیبایی و سئو)
+    RewriteRule ^index\.html$ / [R=301,L]
+
+    # 3. دسترسی به پوشه src (برای فایل‌های CSS و JS) را باز بگذار
+    # چون در فایل HTML آدرس‌ها به صورت ../src هستند، مرورگر درخواست src/ را می‌دهد
+    RewriteRule ^src/(.*)$ src/$1 [L]
+
+    # 4. اگر فایلی پیدا نشد، داخل پوشه public دنبالش بگرد
+    RewriteCond %{REQUEST_FILENAME} !-f
+    RewriteCond %{REQUEST_FILENAME} !-d
+    RewriteRule ^(.*)$ public/$1 [L]
+</IfModule>
+
+# امنیت: جلوگیری از نمایش لیست فایل‌ها (Directory Listing)
+Options -Indexes
