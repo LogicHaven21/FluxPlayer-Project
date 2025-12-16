@@ -6,37 +6,80 @@
       name="viewport"
       content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"
     />
-    <title>FluxPlayer Pro | Local Cinema</title>
 
-    <!-- PWA Manifest & Meta -->
-    <meta name="theme-color" content="#0f172a" />
+    <!-- --- SEO & META DATA --- -->
+    <title>FluxPlayer Pro | Best Online Local Video Player</title>
     <meta
       name="description"
-      content="Professional offline video player with subtitle customization and history."
+      content="FluxPlayer Pro is a secure, offline-capable PWA video player. Play MP4, MKV, WEBM files with multi-subtitle support (SRT/VTT) directly in your browser. No uploads required."
     />
+    <meta
+      name="keywords"
+      content="video player, web player, offline player, srt to vtt, local video player, pwa"
+    />
+    <meta name="author" content="FluxPlayer Team" />
+    <meta name="robots" content="index, follow" />
+
+    <!-- Open Graph (Facebook/Linkedin) -->
+    <meta property="og:type" content="website" />
+    <meta property="og:url" content="https://fluxplayer.pro/" />
+    <meta property="og:title" content="FluxPlayer Pro | Secure Local Cinema" />
+    <meta
+      property="og:description"
+      content="Watch your local videos instantly in the browser. 100% Private, Offline-Ready, and Powerful."
+    />
+    <meta
+      property="og:image"
+      content="https://images.unsplash.com/photo-1536240478700-b869070f9279?w=1200&q=80"
+    />
+
+    <!-- Twitter Card -->
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="FluxPlayer Pro" />
+    <meta
+      name="twitter:description"
+      content="The ultimate browser-based video player. Try it now."
+    />
+
+    <!-- PWA Settings -->
+    <meta name="theme-color" content="#0f172a" />
     <meta name="apple-mobile-web-app-capable" content="yes" />
     <meta
       name="apple-mobile-web-app-status-bar-style"
       content="black-translucent"
     />
-
-    <!-- Favicon (Base64 for reliability or link to file) -->
+    <link rel="manifest" href="manifest.json" />
     <link
       rel="icon"
       type="image/svg+xml"
       href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🎬</text></svg>"
     />
-    <link rel="manifest" href="manifest.json" />
 
-    <!-- External Libraries (CDN) -->
-    <!-- نکته: در پروژه پروداکشن واقعی بهتر است این‌ها را هم دانلود و لوکال کنید یا از NPM استفاده کنید -->
+    <!-- JSON-LD Structured Data (Google Rich Snippets) -->
+    <script type="application/ld+json">
+      {
+        "@context": "https://schema.org",
+        "@type": "WebApplication",
+        "name": "FluxPlayer Pro",
+        "url": "https://fluxplayer.pro",
+        "applicationCategory": "MultimediaApplication",
+        "operatingSystem": "All",
+        "offers": {
+          "@type": "Offer",
+          "price": "0"
+        },
+        "description": "A client-side video player handling local files with advanced subtitle support."
+      }
+    </script>
+
+    <!-- --- EXTERNAL LIBRARIES --- -->
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdn.plyr.io/3.7.8/plyr.css" />
 
-    <!-- Custom CSS -->
+    <!-- --- CUSTOM STYLES --- -->
     <link rel="stylesheet" href="../src/css/style.css" />
 
-    <!-- Tailwind Config (Global Colors/Fonts) -->
+    <!-- Tailwind Configuration -->
     <script>
       tailwind.config = {
         darkMode: "class",
@@ -54,8 +97,10 @@
       };
     </script>
   </head>
-  <body class="text-slate-200 min-h-screen flex flex-col bg-slate-950">
-    <!-- Splash Screen -->
+  <body
+    class="text-slate-200 min-h-screen flex flex-col bg-slate-950 font-sans selection:bg-blue-500 selection:text-white"
+  >
+    <!-- --- SPLASH SCREEN --- -->
     <div
       id="splash-screen"
       class="fixed inset-0 z-[100] bg-slate-950 flex flex-col items-center justify-center"
@@ -64,7 +109,6 @@
         <div
           class="absolute inset-0 bg-blue-500 blur-3xl opacity-20 rounded-full animate-pulse"
         ></div>
-        <!-- Icon will be injected by Lucide -->
         <i
           data-lucide="clapperboard"
           class="w-24 h-24 text-blue-500 relative z-10"
@@ -73,107 +117,191 @@
       <h1 class="text-4xl font-bold mt-6 tracking-tight text-white">
         Flux<span class="text-blue-500">Player</span>
       </h1>
-      <div class="mt-4 flex gap-2">
-        <span
-          class="w-3 h-3 bg-blue-500 rounded-full animate-bounce"
-          style="animation-delay: 0s"
-        ></span>
-        <span
-          class="w-3 h-3 bg-blue-500 rounded-full animate-bounce"
-          style="animation-delay: 0.1s"
-        ></span>
-        <span
-          class="w-3 h-3 bg-blue-500 rounded-full animate-bounce"
-          style="animation-delay: 0.2s"
-        ></span>
+      <p class="text-slate-500 mt-2 animate-pulse">
+        Initializing Cinema Engine...
+      </p>
+    </div>
+
+    <!-- --- ONBOARDING MODAL (First Time User) --- -->
+    <div
+      id="onboarding-modal"
+      class="fixed inset-0 z-50 bg-black/80 backdrop-blur-md hidden flex items-center justify-center opacity-0 transition-opacity duration-300"
+    >
+      <div
+        class="bg-slate-900 w-full max-w-lg rounded-2xl border border-slate-700 shadow-2xl overflow-hidden transform scale-95 transition-transform duration-300"
+      >
+        <!-- Hero Image/Gradient -->
+        <div
+          class="relative h-40 bg-gradient-to-br from-blue-600 to-indigo-700 flex items-center justify-center overflow-hidden"
+        >
+          <div
+            class="absolute inset-0 bg-[url('https://www.transparenttextures.com/patterns/cubes.png')] opacity-10"
+          ></div>
+          <i
+            data-lucide="zap"
+            class="w-20 h-20 text-white drop-shadow-lg relative z-10"
+          ></i>
+        </div>
+
+        <div class="p-8">
+          <h2 class="text-2xl font-bold text-white mb-2 text-center">
+            Welcome to FluxPlayer
+          </h2>
+          <p class="text-slate-400 mb-8 text-center text-sm">
+            Your private, offline, and powerful web cinema.
+          </p>
+
+          <div class="grid grid-cols-2 gap-4 mb-8">
+            <div
+              class="flex items-start gap-3 p-3 bg-slate-800/50 rounded-xl border border-slate-700/50"
+            >
+              <i
+                data-lucide="wifi-off"
+                class="w-5 h-5 text-blue-500 mt-0.5"
+              ></i>
+              <div>
+                <h3 class="font-bold text-slate-200 text-sm">Offline Ready</h3>
+                <p class="text-[10px] text-slate-500">
+                  Works without internet.
+                </p>
+              </div>
+            </div>
+            <div
+              class="flex items-start gap-3 p-3 bg-slate-800/50 rounded-xl border border-slate-700/50"
+            >
+              <i data-lucide="shield" class="w-5 h-5 text-green-500 mt-0.5"></i>
+              <div>
+                <h3 class="font-bold text-slate-200 text-sm">100% Private</h3>
+                <p class="text-[10px] text-slate-500">No server uploads.</p>
+              </div>
+            </div>
+            <div
+              class="flex items-start gap-3 p-3 bg-slate-800/50 rounded-xl border border-slate-700/50"
+            >
+              <i
+                data-lucide="languages"
+                class="w-5 h-5 text-purple-500 mt-0.5"
+              ></i>
+              <div>
+                <h3 class="font-bold text-slate-200 text-sm">Smart Subs</h3>
+                <p class="text-[10px] text-slate-500">Auto-converts SRT.</p>
+              </div>
+            </div>
+            <div
+              class="flex items-start gap-3 p-3 bg-slate-800/50 rounded-xl border border-slate-700/50"
+            >
+              <i
+                data-lucide="download"
+                class="w-5 h-5 text-pink-500 mt-0.5"
+              ></i>
+              <div>
+                <h3 class="font-bold text-slate-200 text-sm">Installable</h3>
+                <p class="text-[10px] text-slate-500">Add to Home Screen.</p>
+              </div>
+            </div>
+          </div>
+
+          <button
+            id="btn-start-app"
+            class="w-full bg-blue-600 hover:bg-blue-500 text-white font-bold py-3.5 rounded-xl transition-all shadow-lg shadow-blue-500/20 active:scale-95 flex items-center justify-center gap-2"
+          >
+            Get Started <i data-lucide="arrow-right" class="w-4 h-4"></i>
+          </button>
+        </div>
       </div>
     </div>
 
-    <!-- Header -->
+    <!-- --- HEADER --- -->
     <header
-      class="w-full h-16 border-b border-slate-800 glass sticky top-0 z-40 flex items-center justify-between px-4 md:px-8 bg-slate-900/70 backdrop-blur-md"
+      class="w-full h-16 border-b border-slate-800 glass sticky top-0 z-40 flex items-center justify-between px-4 md:px-8 bg-slate-900/80 backdrop-blur-md"
     >
       <div class="flex items-center gap-3">
-        <div class="bg-blue-500/10 p-2 rounded-lg">
-          <i data-lucide="play" class="w-5 h-5 text-blue-500"></i>
-        </div>
-        <span class="font-bold text-lg hidden md:block"
-          >FluxPlayer
-          <span
-            class="text-xs font-normal text-slate-500 px-2 py-0.5 bg-slate-800 rounded-full"
-            >PRO</span
-          ></span
+        <div
+          class="bg-gradient-to-br from-blue-500 to-indigo-600 p-2 rounded-lg shadow-lg shadow-blue-500/20"
         >
+          <i data-lucide="play" class="w-5 h-5 text-white fill-current"></i>
+        </div>
+        <div class="flex flex-col">
+          <span class="font-bold text-lg leading-tight tracking-tight"
+            >FluxPlayer</span
+          >
+          <span class="text-[10px] text-blue-400 font-mono">PRO EDITION</span>
+        </div>
       </div>
 
-      <div class="flex items-center gap-3">
+      <div class="flex items-center gap-2 md:gap-4">
         <button
           id="btn-history"
-          class="p-2 hover:bg-slate-800 rounded-full transition-colors relative group"
+          class="p-2.5 hover:bg-slate-800 rounded-full transition-all relative group text-slate-400 hover:text-white"
           title="Watch History"
         >
-          <i
-            data-lucide="clock"
-            class="w-5 h-5 text-slate-400 group-hover:text-white"
-          ></i>
+          <i data-lucide="history" class="w-5 h-5"></i>
           <span
             id="history-badge"
-            class="absolute top-1 right-1 w-2 h-2 bg-red-500 rounded-full hidden"
+            class="absolute top-2 right-2 w-2 h-2 bg-red-500 rounded-full hidden ring-2 ring-slate-900"
           ></span>
         </button>
         <button
           id="btn-settings"
-          class="p-2 hover:bg-slate-800 rounded-full transition-colors group"
+          class="p-2.5 hover:bg-slate-800 rounded-full transition-all text-slate-400 hover:text-white"
           title="Settings"
         >
-          <i
-            data-lucide="settings-2"
-            class="w-5 h-5 text-slate-400 group-hover:text-white"
-          ></i>
+          <i data-lucide="settings-2" class="w-5 h-5"></i>
         </button>
       </div>
     </header>
 
+    <!-- --- MAIN CONTENT --- -->
     <main
-      class="flex-grow flex flex-col md:flex-row container mx-auto p-4 gap-6 max-w-7xl"
+      class="flex-grow flex flex-col lg:flex-row container mx-auto p-4 md:p-6 gap-6 max-w-[1600px]"
     >
-      <!-- Left Column: Player -->
-      <div class="w-full md:w-3/4 flex flex-col gap-6">
-        <!-- Video Player Wrapper -->
+      <!-- Left Column: Player & Inputs -->
+      <div class="w-full lg:w-3/4 flex flex-col gap-6">
+        <!-- Player Container -->
         <div
-          class="aspect-video bg-black rounded-2xl overflow-hidden relative shadow-2xl border border-slate-800 group"
+          class="aspect-video bg-black rounded-2xl overflow-hidden relative shadow-2xl border border-slate-800 group ring-1 ring-white/5"
           id="player-wrapper"
         >
-          <!-- Empty State -->
+          <!-- Empty State Overlay -->
           <div
             id="empty-state"
-            class="absolute inset-0 flex flex-col items-center justify-center z-10 bg-slate-900/80 backdrop-blur-sm transition-opacity duration-300"
+            class="absolute inset-0 flex flex-col items-center justify-center z-10 bg-slate-900/90 backdrop-blur-sm transition-opacity duration-300"
           >
             <div
-              class="p-6 rounded-full bg-slate-800/50 mb-6 border border-slate-700"
+              class="w-24 h-24 rounded-full bg-slate-800/50 mb-6 border border-slate-700 flex items-center justify-center relative"
             >
-              <i data-lucide="film" class="w-16 h-16 text-slate-500"></i>
+              <div
+                class="absolute inset-0 bg-blue-500/20 rounded-full animate-ping opacity-75"
+              ></div>
+              <i
+                data-lucide="film"
+                class="w-10 h-10 text-slate-400 relative z-10"
+              ></i>
             </div>
-            <h2 class="text-2xl font-bold text-white mb-2">Ready to Watch?</h2>
-            <p class="text-slate-400 mb-8">
-              Drop your video file here or use the panel below
+            <h2 class="text-3xl font-bold text-white mb-2 tracking-tight">
+              Local Cinema
+            </h2>
+            <p class="text-slate-400 mb-8 text-center max-w-md px-4">
+              Drag and drop your video files here, or click to browse. <br />
+              Supports MP4, MKV, WEBM & SRT/VTT.
             </p>
             <button
               id="btn-browse-main"
-              class="bg-blue-600 hover:bg-blue-700 text-white px-8 py-3 rounded-full font-medium transition-all transform hover:scale-105 shadow-lg shadow-blue-500/20 flex items-center gap-2"
+              class="bg-white text-slate-900 hover:bg-blue-50 px-8 py-3.5 rounded-full font-bold transition-all transform hover:scale-105 shadow-xl flex items-center gap-2"
             >
-              <i data-lucide="upload"></i> Browse Files
+              <i data-lucide="folder-open"></i> Open Video File
             </button>
           </div>
 
+          <!-- HTML5 Video Element -->
           <video id="player" playsinline controls class="w-full h-full"></video>
         </div>
 
-        <!-- Controls Panel -->
+        <!-- Input Controls -->
         <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-          <!-- Video Input -->
+          <!-- Video Input Zone -->
           <div
-            class="drop-zone p-6 rounded-xl cursor-pointer relative overflow-hidden group"
+            class="drop-zone p-6 rounded-2xl cursor-pointer relative overflow-hidden group border border-dashed border-slate-700 hover:border-blue-500 transition-all bg-slate-800/20"
             id="video-dz"
           >
             <input
@@ -182,242 +310,293 @@
               accept="video/*"
               class="hidden"
             />
-            <div class="flex items-center gap-4 z-10 relative">
+            <div class="flex items-center gap-4 relative z-10">
               <div
-                class="w-12 h-12 rounded-full bg-blue-500/10 flex items-center justify-center group-hover:bg-blue-500/20 transition-colors"
+                class="w-14 h-14 rounded-2xl bg-blue-500/10 flex items-center justify-center group-hover:bg-blue-500/20 transition-colors border border-blue-500/20"
               >
-                <i data-lucide="file-video" class="w-6 h-6 text-blue-500"></i>
+                <i data-lucide="file-video" class="w-7 h-7 text-blue-500"></i>
               </div>
-              <div>
+              <div class="overflow-hidden">
                 <h3
-                  class="font-semibold text-white group-hover:text-blue-400 transition-colors"
+                  class="font-bold text-slate-200 group-hover:text-blue-400 transition-colors"
                 >
-                  Open Video
+                  Select Video
                 </h3>
-                <p class="text-sm text-slate-500" id="video-label">
-                  No file selected
+                <p class="text-xs text-slate-500 truncate" id="video-label">
+                  MP4, MKV, WEBM supported
                 </p>
               </div>
             </div>
           </div>
 
-          <!-- Subtitle Input -->
-          <div
-            class="drop-zone p-6 rounded-xl cursor-pointer relative overflow-hidden group"
-            id="sub-dz"
-          >
-            <input
-              type="file"
-              id="sub-input"
-              accept=".srt,.vtt"
-              class="hidden"
-            />
-            <div class="flex items-center gap-4 z-10 relative">
-              <div
-                class="w-12 h-12 rounded-full bg-purple-500/10 flex items-center justify-center group-hover:bg-purple-500/20 transition-colors"
-              >
-                <i data-lucide="subtitles" class="w-6 h-6 text-purple-500"></i>
-              </div>
-              <div>
-                <h3
-                  class="font-semibold text-white group-hover:text-purple-400 transition-colors"
+          <!-- Subtitle Input Zone -->
+          <div class="flex flex-col gap-3">
+            <div
+              class="drop-zone p-6 rounded-2xl cursor-pointer relative overflow-hidden group border border-dashed border-slate-700 hover:border-purple-500 transition-all bg-slate-800/20"
+              id="sub-dz"
+            >
+              <input
+                type="file"
+                id="sub-input"
+                accept=".srt,.vtt"
+                class="hidden"
+              />
+              <div class="flex items-center gap-4 relative z-10">
+                <div
+                  class="w-14 h-14 rounded-2xl bg-purple-500/10 flex items-center justify-center group-hover:bg-purple-500/20 transition-colors border border-purple-500/20"
                 >
-                  Load Subtitles
-                </h3>
-                <p class="text-sm text-slate-500" id="sub-label">
-                  Supports SRT & VTT
-                </p>
+                  <i
+                    data-lucide="subtitles"
+                    class="w-7 h-7 text-purple-500"
+                  ></i>
+                </div>
+                <div>
+                  <h3
+                    class="font-bold text-slate-200 group-hover:text-purple-400 transition-colors"
+                  >
+                    Add Subtitle
+                  </h3>
+                  <p class="text-xs text-slate-500" id="sub-label">
+                    Drag & drop .srt or .vtt
+                  </p>
+                </div>
               </div>
+            </div>
+
+            <!-- Loaded Subtitles List Container (Injected by JS) -->
+            <div id="loaded-subs-container" class="space-y-2">
+              <!-- Example item (hidden by default) -->
+              <!-- <div class="flex justify-between p-2 bg-slate-800 rounded"><span>Name</span><button>x</button></div> -->
             </div>
           </div>
         </div>
       </div>
 
-      <!-- Right Column: Sidebar (History & Info) -->
-      <div class="w-full md:w-1/4 flex flex-col gap-4">
+      <!-- Right Column: Info & History -->
+      <div class="w-full lg:w-1/4 flex flex-col gap-4 min-w-[300px]">
         <!-- Now Playing Card -->
         <div
-          class="bg-slate-900 rounded-xl p-5 border border-slate-800 shadow-lg"
+          class="bg-slate-900/50 backdrop-blur rounded-2xl p-5 border border-slate-800 shadow-lg"
         >
           <h3
-            class="text-xs font-bold text-slate-500 uppercase tracking-wider mb-4"
+            class="text-[10px] font-bold text-slate-500 uppercase tracking-widest mb-4 flex items-center gap-2"
           >
+            <span
+              class="w-1.5 h-1.5 rounded-full bg-green-500 animate-pulse"
+            ></span>
             Now Playing
           </h3>
-          <div class="flex items-start gap-3">
-            <i
-              data-lucide="play-circle"
-              class="w-5 h-5 text-green-500 mt-1"
-            ></i>
-            <div>
-              <p
-                class="text-white font-medium line-clamp-2"
-                id="current-video-name"
-              >
-                Nothing playing
-              </p>
-              <p class="text-xs text-slate-500 mt-1" id="current-video-meta">
-                --:--
-              </p>
+          <div class="flex flex-col gap-2">
+            <p
+              class="text-white font-bold leading-snug line-clamp-2 text-lg"
+              id="current-video-name"
+            >
+              No video loaded
+            </p>
+            <div
+              class="flex items-center gap-2 text-xs text-slate-500 font-mono"
+            >
+              <i data-lucide="hard-drive" class="w-3 h-3"></i>
+              <span id="current-video-meta">-- MB</span>
             </div>
           </div>
         </div>
 
-        <!-- Recent History -->
+        <!-- History List -->
         <div
-          class="bg-slate-900 rounded-xl border border-slate-800 shadow-lg flex-grow overflow-hidden flex flex-col max-h-[500px]"
+          class="bg-slate-900/50 backdrop-blur rounded-2xl border border-slate-800 shadow-lg flex-grow flex flex-col max-h-[600px]"
         >
           <div
-            class="p-5 border-b border-slate-800 flex justify-between items-center"
+            class="p-5 border-b border-slate-800 flex justify-between items-center bg-slate-900/50 rounded-t-2xl"
           >
             <h3
-              class="text-xs font-bold text-slate-500 uppercase tracking-wider"
+              class="text-[10px] font-bold text-slate-500 uppercase tracking-widest"
             >
               Recent History
             </h3>
             <button
               id="btn-clear-history"
-              class="text-xs text-red-400 hover:text-red-300"
+              class="text-[10px] font-bold text-red-400 hover:text-red-300 px-2 py-1 hover:bg-red-500/10 rounded transition-colors"
             >
-              Clear
+              CLEAR
             </button>
           </div>
+
           <div
-            class="overflow-y-auto flex-grow p-2 space-y-2 custom-scrollbar"
+            class="overflow-y-auto flex-grow p-3 space-y-2 custom-scrollbar"
             id="history-list"
           >
-            <!-- History items injected via JS -->
-            <div class="text-center p-8 text-slate-600 text-sm italic">
-              No recent videos
+            <!-- History items will be injected here -->
+            <div
+              class="flex flex-col items-center justify-center h-32 text-slate-600 gap-2"
+            >
+              <i data-lucide="clock" class="w-6 h-6 opacity-50"></i>
+              <p class="text-xs">No history yet</p>
             </div>
+          </div>
+
+          <div
+            class="p-3 bg-slate-900/80 border-t border-slate-800 text-[10px] text-slate-500 text-center rounded-b-2xl"
+          >
+            History is stored locally on this device.
           </div>
         </div>
       </div>
     </main>
 
-    <!-- Settings Modal -->
+    <!-- --- SETTINGS MODAL --- -->
     <div
       id="settings-modal"
       class="fixed inset-0 z-50 bg-black/60 backdrop-blur-sm hidden flex items-center justify-center opacity-0 transition-opacity duration-200"
     >
       <div
         class="bg-slate-900 w-full max-w-md rounded-2xl border border-slate-700 shadow-2xl transform scale-95 transition-transform duration-200"
-        id="settings-panel"
       >
         <div
           class="p-6 border-b border-slate-800 flex justify-between items-center"
         >
           <h2 class="text-xl font-bold text-white flex items-center gap-2">
-            <i data-lucide="sliders" class="w-5 h-5 text-blue-500"></i> Settings
+            <i data-lucide="sliders" class="w-5 h-5 text-blue-500"></i>
+            Appearance
           </h2>
           <button
             id="btn-close-settings"
-            class="text-slate-400 hover:text-white"
+            class="p-2 text-slate-400 hover:text-white hover:bg-slate-800 rounded-full transition-colors"
           >
-            <i data-lucide="x"></i>
+            <i data-lucide="x" class="w-5 h-5"></i>
           </button>
         </div>
 
-        <div class="p-6 space-y-6 max-h-[70vh] overflow-y-auto">
-          <!-- Font Size -->
-          <div>
-            <label class="block text-sm font-medium text-slate-400 mb-2"
-              >Subtitle Size</label
-            >
+        <div class="p-6 space-y-8 max-h-[70vh] overflow-y-auto">
+          <!-- Font Size Control -->
+          <div class="space-y-3">
+            <div class="flex justify-between items-center">
+              <label class="text-sm font-medium text-slate-300"
+                >Subtitle Size</label
+              >
+              <span
+                id="size-val"
+                class="text-xs font-mono text-blue-400 bg-blue-500/10 px-2 py-1 rounded"
+                >18px</span
+              >
+            </div>
             <input
               type="range"
               id="input-font-size"
               min="12"
-              max="40"
-              value="16"
-              class="w-full accent-blue-500 h-2 bg-slate-700 rounded-lg appearance-none cursor-pointer"
+              max="50"
+              value="18"
+              class="w-full accent-blue-500 h-1.5 bg-slate-700 rounded-lg appearance-none cursor-pointer"
             />
-            <div class="flex justify-between text-xs text-slate-500 mt-1">
-              <span>Small</span>
-              <span id="size-val">16px</span>
-              <span>Huge</span>
+            <div
+              class="flex justify-between text-[10px] text-slate-500 uppercase tracking-wider font-bold"
+            >
+              <span>Tiny</span>
+              <span>Massive</span>
             </div>
           </div>
 
           <!-- Font Family -->
-          <div>
-            <label class="block text-sm font-medium text-slate-400 mb-2"
-              >Font Family</label
+          <div class="space-y-3">
+            <label class="text-sm font-medium text-slate-300 block"
+              >Font Style</label
             >
-            <select
-              id="input-font-family"
-              class="w-full bg-slate-800 border border-slate-700 rounded-lg p-2.5 text-white focus:ring-2 focus:ring-blue-500 outline-none"
-            >
-              <option value="'Inter', sans-serif">Modern (Inter)</option>
-              <option value="'Vazirmatn', sans-serif">Persian (Vazir)</option>
-              <option value="serif">Classic Serif</option>
-              <option value="monospace">Monospace</option>
-              <option value="'Comic Sans MS', cursive">Comic</option>
+            <div class="grid grid-cols-3 gap-2">
+              <button
+                class="font-btn active border border-slate-700 bg-slate-800 hover:bg-slate-700 rounded-lg py-2 text-xs text-white"
+                data-font="'Inter', sans-serif"
+              >
+                Modern
+              </button>
+              <button
+                class="font-btn border border-slate-700 bg-slate-800 hover:bg-slate-700 rounded-lg py-2 text-xs text-white font-serif"
+                data-font="serif"
+              >
+                Classic
+              </button>
+              <button
+                class="font-btn border border-slate-700 bg-slate-800 hover:bg-slate-700 rounded-lg py-2 text-xs text-white font-mono"
+                data-font="monospace"
+              >
+                Mono
+              </button>
+            </div>
+            <!-- Hidden select for logic compatibility -->
+            <select id="input-font-family" class="hidden">
+              <option value="'Inter', sans-serif">Modern</option>
+              <option value="serif">Classic</option>
+              <option value="monospace">Mono</option>
             </select>
           </div>
 
-          <!-- Color Config -->
-          <div class="grid grid-cols-2 gap-4">
-            <div>
-              <label class="block text-sm font-medium text-slate-400 mb-2"
+          <!-- Colors -->
+          <div class="grid grid-cols-2 gap-6">
+            <div class="space-y-3">
+              <label class="text-sm font-medium text-slate-300 block"
                 >Text Color</label
               >
               <div
-                class="flex items-center gap-2 bg-slate-800 p-2 rounded-lg border border-slate-700"
+                class="relative h-10 w-full rounded-lg overflow-hidden ring-1 ring-slate-700"
               >
                 <input
                   type="color"
                   id="input-text-color"
                   value="#ffffff"
-                  class="bg-transparent border-none w-8 h-8 cursor-pointer"
+                  class="absolute -top-2 -left-2 w-[150%] h-[150%] cursor-pointer border-none p-0"
                 />
-                <span class="text-xs text-slate-300">Choose</span>
               </div>
             </div>
-            <div>
-              <label class="block text-sm font-medium text-slate-400 mb-2"
+            <div class="space-y-3">
+              <label class="text-sm font-medium text-slate-300 block"
                 >Background</label
               >
               <div
-                class="flex items-center gap-2 bg-slate-800 p-2 rounded-lg border border-slate-700"
+                class="relative h-10 w-full rounded-lg overflow-hidden ring-1 ring-slate-700"
               >
                 <input
                   type="color"
                   id="input-bg-color"
                   value="#000000"
-                  class="bg-transparent border-none w-8 h-8 cursor-pointer"
-                />
-                <input
-                  type="range"
-                  id="input-bg-opacity"
-                  min="0"
-                  max="100"
-                  value="50"
-                  class="w-16 accent-blue-500 h-1 bg-slate-600 rounded"
+                  class="absolute -top-2 -left-2 w-[150%] h-[150%] cursor-pointer border-none p-0"
                 />
               </div>
             </div>
+          </div>
+
+          <!-- Opacity -->
+          <div class="space-y-3">
+            <div class="flex justify-between items-center">
+              <label class="text-sm font-medium text-slate-300"
+                >Background Opacity</label
+              >
+              <span id="opacity-val" class="text-xs text-slate-500">50%</span>
+            </div>
+            <input
+              type="range"
+              id="input-bg-opacity"
+              min="0"
+              max="100"
+              value="50"
+              class="w-full accent-blue-500 h-1.5 bg-slate-700 rounded-lg appearance-none cursor-pointer"
+            />
           </div>
 
           <!-- Reset -->
           <div class="pt-4 border-t border-slate-800">
             <button
               id="btn-reset-settings"
-              class="w-full py-2 text-sm text-slate-400 hover:text-white border border-slate-700 rounded-lg hover:bg-slate-800 transition-colors"
+              class="w-full py-3 text-sm text-slate-400 hover:text-white border border-slate-700 rounded-xl hover:bg-slate-800 transition-colors flex items-center justify-center gap-2"
             >
-              Reset to Defaults
+              <i data-lucide="rotate-ccw" class="w-4 h-4"></i> Reset to Defaults
             </button>
           </div>
         </div>
       </div>
     </div>
 
-    <!-- Scripts -->
-    <!-- Libraries -->
+    <!-- --- SCRIPTS --- -->
     <script src="https://cdn.plyr.io/3.7.8/plyr.polyfilled.js"></script>
     <script src="https://unpkg.com/lucide@latest"></script>
-
-    <!-- Main Logic -->
     <script type="module" src="../src/js/app.js"></script>
   </body>
 </html>

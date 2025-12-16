@@ -5,14 +5,13 @@
  */
 
 export const UIManager = {
-    // Stores references to callbacks passed from the main controller
     handlers: {},
 
     /**
-     * Initialize the UI: remove splash screen, setup icons, etc.
+     * Initialize UI components
      */
     init() {
-        // Handle Splash Screen Removal
+        // Remove Splash Screen
         setTimeout(() => {
             const splash = document.getElementById('splash-screen');
             if (splash) {
@@ -21,21 +20,22 @@ export const UIManager = {
             }
         }, 1500);
 
-        // Initialize Lucide Icons
+        // Initialize Icons
         if (window.lucide) window.lucide.createIcons();
     },
 
     /**
-     * Binds application logic handlers to UI events.
-     * @param {Object} handlers - Object containing callback functions
+     * Bind Events to Controllers
      */
     bindEvents(handlers) {
         this.handlers = handlers;
 
-        // --- Modals ---
+        // --- 1. Modals & Onboarding ---
         this._bindClick('btn-settings', () => this.toggleModal('settings-modal', true));
         this._bindClick('btn-close-settings', () => this.toggleModal('settings-modal', false));
+        this._bindClick('btn-start-app', () => handlers.onStartApp && handlers.onStartApp());
         
+        // Close modal on backdrop click
         const settingsModal = document.getElementById('settings-modal');
         if (settingsModal) {
             settingsModal.onclick = (e) => {
@@ -43,7 +43,7 @@ export const UIManager = {
             };
         }
 
-        // --- History Panel ---
+        // --- 2. History Actions ---
         this._bindClick('btn-history', () => {
             const list = document.getElementById('history-list');
             if (list) {
@@ -53,29 +53,110 @@ export const UIManager = {
         });
         this._bindClick('btn-clear-history', () => handlers.onClearHistory && handlers.onClearHistory());
 
-        // --- File Inputs & Drag Drop ---
-        // Video
+        // --- 3. File Inputs ---
         this._setupFileInput('video-input', 'video-dz', handlers.onVideoSelect);
         this._bindClick('btn-browse-main', () => document.getElementById('video-input')?.click());
         
-        // Subtitle
         this._setupFileInput('sub-input', 'sub-dz', handlers.onSubtitleSelect);
 
-        // Global Drag on Player
+        // Global drag on player
         this._setupDragDrop('player-wrapper', handlers.onVideoSelect);
 
-        // --- Settings Inputs ---
-        this._bindInput('input-font-size', (val) => handlers.onSettingChange('fontSize', val));
-        this._bindInput('input-font-family', (val) => handlers.onSettingChange('fontFamily', val), 'change');
+        // --- 4. Settings Inputs ---
+        
+        // Font Size
+        this._bindInput('input-font-size', (val) => {
+            const label = document.getElementById('size-val');
+            if(label) label.innerText = `${val}px`;
+            handlers.onSettingChange('fontSize', val);
+        });
+
+        // Font Family (Buttons logic)
+        const fontBtns = document.querySelectorAll('.font-btn');
+        fontBtns.forEach(btn => {
+            btn.addEventListener('click', () => {
+                // Update active state
+                fontBtns.forEach(b => b.classList.remove('active', 'border-blue-500', 'text-blue-500', 'bg-blue-500/10'));
+                btn.classList.add('active', 'border-blue-500', 'text-blue-500', 'bg-blue-500/10');
+                
+                // Trigger handler
+                const font = btn.dataset.font;
+                handlers.onSettingChange('fontFamily', font);
+            });
+        });
+
+        // Colors
         this._bindInput('input-text-color', (val) => handlers.onSettingChange('textColor', val));
         this._bindInput('input-bg-color', (val) => handlers.onSettingChange('bgColor', val));
-        this._bindInput('input-bg-opacity', (val) => handlers.onSettingChange('bgOpacity', val));
+        
+        // Opacity
+        this._bindInput('input-bg-opacity', (val) => {
+            const label = document.getElementById('opacity-val');
+            if(label) label.innerText = `${val}%`;
+            handlers.onSettingChange('bgOpacity', val);
+        });
         
         this._bindClick('btn-reset-settings', () => handlers.onSettingsReset && handlers.onSettingsReset());
     },
 
     /**
-     * Renders the watch history list.
+     * Renders the list of active subtitles with delete buttons
+     * @param {Array} tracks - Array of track objects
+     */
+    renderSubtitleList(tracks) {
+        const container = document.getElementById('loaded-subs-container');
+        const dzLabel = document.getElementById('sub-label');
+        
+        if (!container) return;
+        
+        container.innerHTML = ''; // Clear current list
+
+        if (tracks.length === 0) {
+            if (dzLabel) {
+                dzLabel.innerText = "Drag & drop .srt or .vtt";
+                dzLabel.className = "text-xs text-slate-500";
+            }
+            return;
+        }
+
+        // Update Dropzone label
+        if (dzLabel) {
+            dzLabel.innerText = `${tracks.length} subtitle(s) loaded`;
+            dzLabel.className = "text-xs text-purple-400 font-bold";
+        }
+
+        // Render List
+        tracks.forEach((track, index) => {
+            const item = document.createElement('div');
+            item.className = "subtitle-item flex items-center justify-between p-2.5 bg-slate-800/60 rounded-lg border border-slate-700/50 group hover:border-purple-500/50 transition-colors";
+            
+            item.innerHTML = `
+                <div class="flex items-center gap-2 overflow-hidden">
+                    <i data-lucide="message-square" class="w-3.5 h-3.5 text-purple-500 flex-shrink-0"></i>
+                    <span class="text-xs text-slate-300 font-mono truncate select-none">${track.label}</span>
+                </div>
+                <button class="btn-remove-sub p-1 text-slate-500 hover:text-red-400 hover:bg-red-500/10 rounded transition-colors" title="Remove Subtitle">
+                    <i data-lucide="x" class="w-3.5 h-3.5"></i>
+                </button>
+            `;
+
+            // Bind Remove Click
+            const removeBtn = item.querySelector('.btn-remove-sub');
+            removeBtn.onclick = (e) => {
+                e.stopPropagation();
+                if (this.handlers.onSubtitleRemove) {
+                    this.handlers.onSubtitleRemove(index);
+                }
+            };
+
+            container.appendChild(item);
+        });
+
+        if (window.lucide) window.lucide.createIcons();
+    },
+
+    /**
+     * Renders Watch History (Static/Informational)
      */
     renderHistory(history) {
         const list = document.getElementById('history-list');
@@ -83,14 +164,19 @@ export const UIManager = {
         
         if (!list) return;
 
-        // Update Badge visibility
+        // Badge Logic
         if (badge) {
             if (history.length > 0) badge.classList.remove('hidden');
             else badge.classList.add('hidden');
         }
 
         if (history.length === 0) {
-            list.innerHTML = `<div class="text-center p-8 text-slate-600 text-sm italic">No recent videos</div>`;
+            list.innerHTML = `
+                <div class="flex flex-col items-center justify-center h-32 text-slate-600 gap-2">
+                    <i data-lucide="clock" class="w-8 h-8 opacity-20"></i>
+                    <p class="text-xs">No history yet</p>
+                </div>`;
+            if (window.lucide) window.lucide.createIcons();
             return;
         }
 
@@ -98,19 +184,19 @@ export const UIManager = {
             const minutes = Math.floor(h.time / 60);
             const seconds = Math.floor(h.time % 60);
             const timeStr = `${minutes}:${String(seconds).padStart(2, '0')}`;
+            const dateStr = new Date(h.lastPlayed).toLocaleDateString();
             
             return `
-            <div class="p-3 bg-slate-800/40 hover:bg-slate-800 rounded-lg border border-slate-700/50 cursor-pointer transition-colors group relative" 
-                 onclick="alert('Security: Please re-select this file manually.')">
-                <div class="flex justify-between items-start">
-                    <h4 class="text-sm font-medium text-slate-300 group-hover:text-blue-400 truncate pr-2 w-full" title="${h.name}">${h.name}</h4>
+            <div class="p-3 bg-slate-800/30 hover:bg-slate-800/60 rounded-xl border border-slate-700/30 hover:border-slate-600 transition-all group select-none">
+                <div class="flex justify-between items-start mb-1">
+                    <h4 class="text-xs font-bold text-slate-300 group-hover:text-white truncate w-full" title="${h.name}">${h.name}</h4>
                 </div>
-                <div class="flex justify-between items-center mt-2">
-                    <div class="flex items-center gap-1.5">
-                        <i data-lucide="clock" class="w-3 h-3 text-slate-500"></i>
-                        <span class="text-xs text-slate-400 font-mono">${timeStr}</span>
+                <div class="flex justify-between items-center">
+                    <div class="flex items-center gap-1.5 bg-slate-900/50 px-1.5 py-0.5 rounded text-[10px] text-slate-400 font-mono">
+                        <i data-lucide="play-circle" class="w-3 h-3 text-blue-500"></i>
+                        <span>Stopped at ${timeStr}</span>
                     </div>
-                    <span class="text-[10px] text-slate-600">${new Date(h.lastPlayed).toLocaleDateString()}</span>
+                    <span class="text-[10px] text-slate-600">${dateStr}</span>
                 </div>
             </div>
             `;
@@ -120,26 +206,7 @@ export const UIManager = {
     },
 
     /**
-     * Syncs the UI inputs with the current settings state.
-     */
-    syncSettings(settings) {
-        const setVal = (id, val) => {
-            const el = document.getElementById(id);
-            if (el) el.value = val;
-        };
-
-        setVal('input-font-size', settings.fontSize);
-        setVal('input-font-family', settings.fontFamily);
-        setVal('input-text-color', settings.textColor);
-        setVal('input-bg-color', settings.bgColor);
-        setVal('input-bg-opacity', settings.bgOpacity);
-
-        const sizeLabel = document.getElementById('size-val');
-        if (sizeLabel) sizeLabel.innerText = `${settings.fontSize}px`;
-    },
-
-    /**
-     * Updates the "Now Playing" info section.
+     * Updates "Now Playing" UI
      */
     updateNowPlaying(file) {
         const nameEl = document.getElementById('current-video-name');
@@ -150,76 +217,55 @@ export const UIManager = {
         if (nameEl) nameEl.innerText = file.name;
         if (metaEl) {
             const sizeMB = (file.size / (1024 * 1024)).toFixed(1);
-            metaEl.innerText = `${sizeMB} MB • Local File`;
+            metaEl.innerHTML = `<i data-lucide="hard-drive" class="w-3 h-3"></i> ${sizeMB} MB • Local File`;
         }
 
         if (labelEl) {
             labelEl.innerText = file.name;
-            labelEl.classList.add('text-blue-400');
+            labelEl.className = "text-xs text-blue-400 font-bold truncate";
         }
         
-        if (zoneEl) zoneEl.classList.add('border-blue-500/50');
-    },
-
-    /**
-     * Adds a newly loaded subtitle to the UI list.
-     * Dynamic List Creation Logic.
-     */
-    updateSubtitleLabel(name) {
-        // 1. Update dropzone text hint
-        const label = document.getElementById('sub-label');
-        if (label) {
-            label.innerText = "Add more subtitles...";
-            label.classList.add('text-purple-400');
+        if (zoneEl) {
+            zoneEl.classList.add('border-blue-500/50', 'bg-blue-500/5');
         }
-
-        // 2. Find parent container
-        const zone = document.getElementById('sub-dz');
-        if (!zone) return;
-
-        // 3. Find or Create the subtitle list container
-        let list = document.getElementById('loaded-subs-list');
-        if (!list) {
-            list = document.createElement('div');
-            list.id = 'loaded-subs-list';
-            list.className = 'mt-3 space-y-2 w-full max-h-32 overflow-y-auto custom-scrollbar';
-            // Insert it right after the dropzone div
-            zone.parentNode.insertBefore(list, zone.nextSibling);
-        }
-
-        // 4. Append the new subtitle item
-        const item = document.createElement('div');
-        item.className = 'flex items-center gap-2 text-xs text-slate-300 bg-slate-800/50 p-2 rounded border border-slate-700/50 animate-pulse';
-        // Remove animation after a moment
-        setTimeout(() => item.classList.remove('animate-pulse'), 1000);
-
-        item.innerHTML = `
-            <i data-lucide="check-circle-2" class="w-4 h-4 text-green-500 flex-shrink-0"></i>
-            <span class="truncate flex-1 font-mono">${name}</span>
-        `;
-        list.appendChild(item);
-
-        // Refresh icons for the new element
+        
         if (window.lucide) window.lucide.createIcons();
     },
 
     /**
-     * Resets the subtitle UI (clears list and label).
+     * Syncs Settings UI with State
      */
-    resetSubtitleLabel() {
-        const label = document.getElementById('sub-label');
-        if (label) {
-            label.innerText = "Supports SRT & VTT";
-            label.classList.remove('text-purple-400');
-        }
+    syncSettings(settings) {
+        const setVal = (id, val) => {
+            const el = document.getElementById(id);
+            if (el) el.value = val;
+        };
 
-        // Remove the dynamic list
-        const list = document.getElementById('loaded-subs-list');
-        if (list) list.remove();
+        setVal('input-font-size', settings.fontSize);
+        setVal('input-text-color', settings.textColor);
+        setVal('input-bg-color', settings.bgColor);
+        setVal('input-bg-opacity', settings.bgOpacity);
+
+        // Update Labels
+        const sizeLabel = document.getElementById('size-val');
+        if (sizeLabel) sizeLabel.innerText = `${settings.fontSize}px`;
+        
+        const opacityLabel = document.getElementById('opacity-val');
+        if (opacityLabel) opacityLabel.innerText = `${settings.bgOpacity}%`;
+
+        // Update Font Buttons
+        const fontBtns = document.querySelectorAll('.font-btn');
+        fontBtns.forEach(btn => {
+            if (btn.dataset.font === settings.fontFamily) {
+                btn.classList.add('active', 'border-blue-500', 'text-blue-500', 'bg-blue-500/10');
+            } else {
+                btn.classList.remove('active', 'border-blue-500', 'text-blue-500', 'bg-blue-500/10');
+            }
+        });
     },
 
     /**
-     * Shows a modal with animation.
+     * Modal Control
      */
     toggleModal(modalId, show) {
         const modal = document.getElementById(modalId);
@@ -241,23 +287,26 @@ export const UIManager = {
                 panel.classList.remove('scale-100');
                 panel.classList.add('scale-95');
             }
-            setTimeout(() => modal.classList.add('hidden'), 200);
+            setTimeout(() => modal.classList.add('hidden'), 300);
         }
     },
 
     /**
-     * Shows a temporary toast notification.
+     * Toast Notification
      */
     showToast(message) {
         const wrapper = document.getElementById('player-wrapper');
         if (!wrapper) return;
 
         const toast = document.createElement('div');
-        toast.className = 'absolute top-4 left-1/2 transform -translate-x-1/2 bg-blue-600/90 text-white px-4 py-2 rounded-full text-sm font-bold shadow-lg z-50 animate-bounce pointer-events-none transition-opacity duration-500';
-        toast.innerText = message;
+        toast.className = 'absolute top-6 left-1/2 transform -translate-x-1/2 bg-slate-900/90 backdrop-blur text-white px-4 py-2 rounded-full text-xs font-bold shadow-xl z-50 animate-bounce pointer-events-none border border-white/10 flex items-center gap-2';
+        toast.innerHTML = `<i data-lucide="info" class="w-3 h-3 text-blue-500"></i> ${message}`;
         
         wrapper.appendChild(toast);
+        if (window.lucide) window.lucide.createIcons();
+
         setTimeout(() => {
+            toast.style.transition = 'opacity 0.5s';
             toast.style.opacity = '0';
             setTimeout(() => toast.remove(), 500);
         }, 3000);

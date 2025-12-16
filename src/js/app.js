@@ -7,7 +7,7 @@ import { UIManager } from './ui.js';
 import { Storage } from './storage.js';
 import { SubtitleParser } from './subtitle-parser.js';
 
-// --- 1. Application State & History Management ---
+// --- 1. Application State ---
 const AppState = {
     history: [],
     settings: {
@@ -17,17 +17,35 @@ const AppState = {
         bgColor: "#000000",
         bgOpacity: 50
     },
+    hasSeenOnboarding: false,
 
     init() {
         const saved = Storage.get();
         if (saved) {
             this.history = saved.history || [];
+            // Merge settings to ensure defaults exist
             this.settings = { ...this.settings, ...saved.settings };
+            this.hasSeenOnboarding = saved.hasSeenOnboarding || false;
+        }
+
+        // Check for first-time user
+        if (!this.hasSeenOnboarding) {
+            UIManager.toggleModal('onboarding-modal', true);
         }
     },
 
     save() {
-        Storage.save({ history: this.history, settings: this.settings });
+        Storage.save({
+            history: this.history,
+            settings: this.settings,
+            hasSeenOnboarding: this.hasSeenOnboarding
+        });
+    },
+
+    completeOnboarding() {
+        this.hasSeenOnboarding = true;
+        this.save();
+        UIManager.toggleModal('onboarding-modal', false);
     },
 
     updateSetting(key, value) {
@@ -35,8 +53,12 @@ const AppState = {
         this.save();
     },
 
+    // History Logic
     addToHistory(file, time = 0) {
+        // Remove duplicate if exists
         this.history = this.history.filter(h => h.name !== file.name);
+        
+        // Add to top
         this.history.unshift({
             name: file.name,
             size: file.size,
@@ -44,7 +66,10 @@ const AppState = {
             time: time,
             lastPlayed: new Date().toISOString()
         });
+
+        // Limit to 20 items
         if (this.history.length > 20) this.history.pop();
+        
         this.save();
         UIManager.renderHistory(this.history);
     },
@@ -74,8 +99,7 @@ const PlayerController = {
     instance: null,
     currentFile: null,
     videoObjectUrl: null,
-    subtitleBlobs: [], // Keep track of blobs to revoke them later
-    tracks: [], // Store active subtitle tracks configuration
+    tracks: [], // Stores active subtitle tracks { label, src, blob }
 
     init() {
         this.instance = new Plyr('#player', {
@@ -85,7 +109,6 @@ const PlayerController = {
             ],
             settings: ['captions', 'quality', 'speed', 'loop'],
             captions: { active: true, update: true, language: 'auto' },
-            // Important: Preserve ratio
             ratio: '16:9'
         });
 
@@ -93,6 +116,7 @@ const PlayerController = {
         this.instance.on('timeupdate', () => {
             if (!this.currentFile) return;
             const time = this.instance.currentTime;
+            // Save every 5 seconds
             if (time > 0 && Math.floor(time) % 5 === 0) {
                 AppState.updateHistoryTime(this.currentFile.name, time);
             }
@@ -104,32 +128,27 @@ const PlayerController = {
         });
     },
 
-    /**
-     * Loads a video file and resets tracks
-     */
     loadVideo(file) {
-        // 1. Cleanup Memory
+        // Cleanup previous video and subtitles
         if (this.videoObjectUrl) URL.revokeObjectURL(this.videoObjectUrl);
         this.cleanupSubtitles();
 
-        // 2. Setup New Video
         this.currentFile = file;
         this.videoObjectUrl = URL.createObjectURL(file);
-        this.tracks = []; // Reset subtitle tracks for new video
 
-        // 3. Check History
+        // Check History for resume
         const historyItem = AppState.getHistoryItem(file.name);
         const startTime = historyItem ? historyItem.time : 0;
 
-        // 4. Update Source
+        // Load Source
         this.instance.source = {
             type: 'video',
             title: file.name,
             sources: [{ src: this.videoObjectUrl, type: file.type || 'video/mp4' }],
-            tracks: [] // Start with no tracks
+            tracks: [] // Reset tracks
         };
 
-        // 5. Handle Start Time
+        // Resume Logic
         if (startTime > 0) {
             this.instance.once('loadedmetadata', () => {
                 this.instance.currentTime = startTime;
@@ -139,17 +158,13 @@ const PlayerController = {
 
         setTimeout(() => this.instance.play(), 200);
 
-        // 6. UI Updates
         AppState.addToHistory(file, startTime);
         UIManager.updateNowPlaying(file);
-        UIManager.resetSubtitleLabel();
+        UIManager.renderSubtitleList(this.tracks); // Will be empty initially
     },
 
-    /**
-     * Loads a subtitle, converts it, and adds it to the player tracks list
-     */
     loadSubtitle(file) {
-        if (!this.instance || !this.currentFile) {
+        if (!this.currentFile) {
             UIManager.showToast('Please load a video first!');
             return;
         }
@@ -159,42 +174,49 @@ const PlayerController = {
             const content = e.target.result;
             let vttContent = content;
 
-            // Convert SRT to VTT
+            // Convert if SRT
             if (SubtitleParser.isSrt(file)) {
                 vttContent = SubtitleParser.srtToVtt(content);
             }
 
-            // Create Blob
             const blobUrl = SubtitleParser.createTrackBlob(vttContent);
-            this.subtitleBlobs.push(blobUrl);
+            const label = file.name.replace(/\.[^/.]+$/, ""); // Remove extension
 
-            // Add to tracks list
-            // We set 'default: true' for the new one, and false for others
-            this.tracks.forEach(t => t.default = false);
-            
+            // Add to tracks array
             this.tracks.push({
                 kind: 'captions',
-                label: file.name.replace(/\.[^/.]+$/, ""), // Remove extension for cleaner label
-                srclang: 'en', // Can be dynamic if needed, but 'en' works for general display
+                label: label,
+                srclang: 'en',
                 src: blobUrl,
-                default: true
+                default: this.tracks.length === 0 // Default if it's the first one
             });
 
-            // Refresh Source to update Plyr Menu
             this.refreshSourceWithTracks();
-
-            // UI Update
-            UIManager.updateSubtitleLabel(file.name);
-            UIManager.showToast('Subtitle Added to Menu');
+            UIManager.renderSubtitleList(this.tracks);
+            UIManager.showToast('Subtitle Added');
         };
         
         reader.readAsText(file);
     },
 
-    /**
-     * Refreshes the player source to include new tracks without losing playback position
-     */
+    removeSubtitle(index) {
+        const track = this.tracks[index];
+        if (track) {
+            // Revoke blob to free memory
+            if (track.src) URL.revokeObjectURL(track.src);
+            
+            // Remove from array
+            this.tracks.splice(index, 1);
+            
+            this.refreshSourceWithTracks();
+            UIManager.renderSubtitleList(this.tracks);
+            UIManager.showToast('Subtitle Removed');
+        }
+    },
+
     refreshSourceWithTracks() {
+        if (!this.instance || !this.currentFile) return;
+
         const currentTime = this.instance.currentTime;
         const isPaused = this.instance.paused;
 
@@ -202,7 +224,7 @@ const PlayerController = {
             type: 'video',
             title: this.currentFile.name,
             sources: [{ src: this.videoObjectUrl, type: this.currentFile.type || 'video/mp4' }],
-            tracks: this.tracks // Inject the updated list of tracks
+            tracks: this.tracks
         };
 
         // Restore position
@@ -213,8 +235,9 @@ const PlayerController = {
     },
 
     cleanupSubtitles() {
-        this.subtitleBlobs.forEach(url => URL.revokeObjectURL(url));
-        this.subtitleBlobs = [];
+        this.tracks.forEach(t => {
+            if (t.src) URL.revokeObjectURL(t.src);
+        });
         this.tracks = [];
     }
 };
@@ -262,7 +285,7 @@ const SettingsController = {
     }
 };
 
-// --- 4. Main Entry Point ---
+// --- 4. Main Initialization ---
 document.addEventListener('DOMContentLoaded', () => {
     AppState.init();
     UIManager.init();
@@ -270,17 +293,25 @@ document.addEventListener('DOMContentLoaded', () => {
     SettingsController.init();
     UIManager.renderHistory(AppState.history);
 
+    // Bind Events
     UIManager.bindEvents({
+        // Player Events
         onVideoSelect: (file) => PlayerController.loadVideo(file),
         onSubtitleSelect: (file) => PlayerController.loadSubtitle(file),
+        onSubtitleRemove: (index) => PlayerController.removeSubtitle(index),
+        
+        // Settings Events
         onSettingChange: (key, value) => SettingsController.update(key, value),
         onSettingsReset: () => SettingsController.reset(),
+        
+        // History Events
         onClearHistory: () => {
-            if (confirm('Are you sure you want to clear your watch history?')) {
-                AppState.clearHistory();
-            }
-        }
+            if (confirm('Clear watch history?')) AppState.clearHistory();
+        },
+        
+        // Onboarding
+        onStartApp: () => AppState.completeOnboarding()
     });
 
-    console.log('FluxPlayer Pro Controller Loaded.');
+    console.log('FluxPlayer Pro Loaded.');
 });
