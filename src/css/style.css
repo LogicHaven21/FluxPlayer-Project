@@ -2,9 +2,8 @@
  * Features: 10+ Persian Fonts, Stable Subtitles, Fixed Play Animation
  */
 
-/* --- 1. Font Imports (Google Fonts Collection) --- */
-/* Includes: Vazirmatn, Lalezar, Amiri, Lateef, Katibeh, Scheherazade New, Rubik, Noto Naskh, Lemonada, Rakkas */
-@import url('https://fonts.googleapis.com/css2?family=Amiri:ital,wght@0,400;0,700;1,400&family=Inter:wght@300;400;500;600;700&family=Katibeh&family=Lalezar&family=Lateef&family=Lemonada:wght@300;400;600&family=Noto+Naskh+Arabic:wght@400;700&family=Rakkas&family=Rubik:wght@300;400;500;700&family=Scheherazade+New:wght@400;700&family=Vazirmatn:wght@100;300;400;500;700;900&display=swap');
+/* --- 1. Fonts --- */
+/* Switched to system fonts to stay fully offline (no Google Fonts). */
 
 /* --- 2. Global Variables --- */
 :root {
@@ -12,7 +11,7 @@
     --caption-size: 20px;
     --caption-color: #ffffff;
     --caption-bg: rgba(0, 0, 0, 0.75); /* Darker background for readability */
-    --caption-font: 'Vazirmatn', sans-serif; /* Default */
+    --caption-font: 'Segoe UI', 'Helvetica Neue', system-ui, sans-serif; /* Default */
     
     /* Brand Colors */
     --brand-primary: #3b82f6;
@@ -26,7 +25,7 @@
 
 /* --- 3. Base Resets --- */
 body {
-    font-family: 'Vazirmatn', 'Inter', sans-serif;
+    font-family: 'Segoe UI', 'Helvetica Neue', system-ui, sans-serif;
     background-color: var(--bg-dark);
     color: #e2e8f0;
     overflow-x: hidden;
@@ -166,6 +165,11 @@ video::cue {
     color: white;
     border-color: var(--brand-primary);
     box-shadow: 0 4px 12px rgba(59, 130, 246, 0.3);
+}
+
+/* Lightweight texture to replace remote patterns */
+.texture-overlay {
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 120 120'%3E%3Cdefs%3E%3CradialGradient id='g' cx='20%25' cy='20%25' r='80%25'%3E%3Cstop offset='0%25' stop-color='%23ffffff' stop-opacity='0.05'/%3E%3Cstop offset='100%25' stop-color='%23000000' stop-opacity='0'/%3E%3C/radialGradient%3E%3C/defs%3E%3Crect width='120' height='120' fill='url(%23g)'/%3E%3C/svg%3E");
 }
 
 /* Custom Scrollbar */

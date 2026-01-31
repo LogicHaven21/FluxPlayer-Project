@@ -9,30 +9,30 @@
   "orientation": "any",
   "icons": [
     {
-      "src": "https://cdn-icons-png.flaticon.com/512/2504/2504929.png",
+      "src": "assets/img/icon.svg",
       "sizes": "192x192",
-      "type": "image/png",
+      "type": "image/svg+xml",
       "purpose": "any maskable"
     },
     {
-      "src": "https://cdn-icons-png.flaticon.com/512/2504/2504929.png",
+      "src": "assets/img/icon.svg",
       "sizes": "512x512",
-      "type": "image/png",
+      "type": "image/svg+xml",
       "purpose": "any maskable"
     }
   ],
   "screenshots": [
     {
-      "src": "https://images.unsplash.com/photo-1611162617474-5b21e879e113?w=800&q=80",
-      "sizes": "800x600",
-      "type": "image/jpg",
+      "src": "assets/img/screenshot-wide.svg",
+      "sizes": "1200x630",
+      "type": "image/svg+xml",
       "form_factor": "wide",
       "label": "Desktop View"
     },
     {
-      "src": "https://images.unsplash.com/photo-1611162616475-46b635cb6868?w=400&q=80",
-      "sizes": "400x800",
-      "type": "image/jpg",
+      "src": "assets/img/screenshot-tall.svg",
+      "sizes": "630x1200",
+      "type": "image/svg+xml",
       "form_factor": "narrow",
       "label": "Mobile View"
     }

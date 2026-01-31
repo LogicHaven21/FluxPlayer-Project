@@ -1,0 +1,19 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 630" role="img" aria-label="FluxPlayer preview">
+  <defs>
+    <linearGradient id="bg" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#0f172a" />
+      <stop offset="40%" stop-color="#1d4ed8" />
+      <stop offset="100%" stop-color="#7c3aed" />
+    </linearGradient>
+  </defs>
+  <rect width="1200" height="630" fill="url(#bg)" />
+  <rect x="80" y="80" width="1040" height="470" rx="40" fill="rgba(255,255,255,0.05)" stroke="rgba(255,255,255,0.12)" />
+  <text x="120" y="220" fill="#e0f2fe" font-family="'Segoe UI', 'Helvetica Neue', sans-serif" font-size="72" font-weight="700">FluxPlayer Pro</text>
+  <text x="120" y="290" fill="#c7d2fe" font-family="'Segoe UI', 'Helvetica Neue', sans-serif" font-size="28">Offline-first local video player</text>
+  <rect x="120" y="330" width="320" height="160" rx="20" fill="#0f172a" stroke="rgba(255,255,255,0.15)" />
+  <polygon points="190,370 330,450 190,530" fill="#3b82f6" opacity="0.9" />
+  <rect x="480" y="330" width="550" height="160" rx="20" fill="rgba(255,255,255,0.06)" stroke="rgba(255,255,255,0.1)" />
+  <text x="510" y="400" fill="#e2e8f0" font-family="'Segoe UI', 'Helvetica Neue', sans-serif" font-size="22">• Play local MP4 / MKV / WEBM</text>
+  <text x="510" y="440" fill="#e2e8f0" font-family="'Segoe UI', 'Helvetica Neue', sans-serif" font-size="22">• Load SRT / VTT subtitles offline</text>
+  <text x="510" y="480" fill="#e2e8f0" font-family="'Segoe UI', 'Helvetica Neue', sans-serif" font-size="22">• No network requests required</text>
+</svg>

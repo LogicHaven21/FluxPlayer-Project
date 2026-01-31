@@ -12,7 +12,7 @@ const AppState = {
     history: [],
     settings: {
         fontSize: 18,
-        fontFamily: "'Inter', sans-serif",
+        fontFamily: "'Segoe UI', 'Helvetica Neue', system-ui, sans-serif",
         textColor: "#ffffff",
         bgColor: "#000000",
         bgOpacity: 50
@@ -109,7 +109,9 @@ const PlayerController = {
             ],
             settings: ['captions', 'quality', 'speed', 'loop'],
             captions: { active: true, update: true, language: 'auto' },
-            ratio: '16:9'
+            ratio: '16:9',
+            iconUrl: 'assets/vendor/plyr.svg',
+            blankVideo: 'assets/vendor/blank.mp4'
         });
 
         // Track progress
@@ -258,7 +260,7 @@ const SettingsController = {
     reset() {
         const defaults = {
             fontSize: 18,
-            fontFamily: "'Inter', sans-serif",
+            fontFamily: "'Segoe UI', 'Helvetica Neue', system-ui, sans-serif",
             textColor: "#ffffff",
             bgColor: "#000000",
             bgOpacity: 50

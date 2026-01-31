@@ -1,0 +1,22 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 630 1200" role="img" aria-label="FluxPlayer mobile mock">
+  <defs>
+    <linearGradient id="tall" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#0f172a" />
+      <stop offset="100%" stop-color="#1e3a8a" />
+    </linearGradient>
+  </defs>
+  <rect width="630" height="1200" fill="url(#tall)" />
+  <rect x="70" y="90" width="490" height="1020" rx="40" fill="rgba(255,255,255,0.05)" stroke="rgba(255,255,255,0.12)" />
+  <rect x="120" y="160" width="390" height="220" rx="24" fill="#000" stroke="#334155" />
+  <polygon points="220,220 380,270 220,320" fill="#60a5fa" opacity="0.9" />
+  <rect x="120" y="420" width="390" height="160" rx="18" fill="#0f172a" stroke="#334155" />
+  <text x="140" y="470" fill="#e0f2fe" font-family="'Segoe UI', 'Helvetica Neue', sans-serif" font-size="26" font-weight="700">FluxPlayer</text>
+  <text x="140" y="508" fill="#cbd5e1" font-family="'Segoe UI', 'Helvetica Neue', sans-serif" font-size="18">Offline playback</text>
+  <text x="140" y="542" fill="#cbd5e1" font-family="'Segoe UI', 'Helvetica Neue', sans-serif" font-size="18">Subtitles & history</text>
+  <rect x="120" y="620" width="390" height="360" rx="18" fill="#1e293b" stroke="#334155" />
+  <text x="140" y="670" fill="#cbd5e1" font-family="'Segoe UI', 'Helvetica Neue', sans-serif" font-size="18">Load local files</text>
+  <text x="140" y="710" fill="#cbd5e1" font-family="'Segoe UI', 'Helvetica Neue', sans-serif" font-size="18">No internet required</text>
+  <text x="140" y="750" fill="#cbd5e1" font-family="'Segoe UI', 'Helvetica Neue', sans-serif" font-size="18">Installable PWA</text>
+  <rect x="200" y="950" width="230" height="70" rx="16" fill="#2563eb" />
+  <text x="230" y="995" fill="#f8fafc" font-family="'Segoe UI', 'Helvetica Neue', sans-serif" font-size="22" font-weight="700">Play</text>
+</svg>

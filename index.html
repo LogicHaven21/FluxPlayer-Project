@@ -8,7 +8,7 @@
     />
 
     <!-- --- SEO & META DATA --- -->
-    <title>FluxPlayer Pro | Best Online Local Video Player</title>
+    <title>FluxPlayer Pro | Best Offline Local Video Player</title>
     <meta
       name="description"
       content="FluxPlayer Pro is a secure, offline-capable PWA video player. Play MP4, MKV, WEBM files with multi-subtitle support (SRT/VTT) directly in your browser. No uploads required."
@@ -28,10 +28,7 @@
       property="og:description"
       content="Watch your local videos instantly in the browser. 100% Private, Offline-Ready, and Powerful."
     />
-    <meta
-      property="og:image"
-      content="https://images.unsplash.com/photo-1536240478700-b869070f9279?w=1200&q=80"
-    />
+    <meta property="og:image" content="assets/img/og.svg" />
 
     <!-- Twitter Card -->
     <meta name="twitter:card" content="summary_large_image" />
@@ -73,11 +70,11 @@
     </script>
 
     <!-- --- EXTERNAL LIBRARIES --- -->
-    <script src="https://cdn.tailwindcss.com"></script>
-    <link rel="stylesheet" href="https://cdn.plyr.io/3.7.8/plyr.css" />
+    <script src="assets/vendor/js/tailwindcdn.js"></script>
+    <link rel="stylesheet" href="assets/vendor/css/plyr.css" />
 
     <!-- --- CUSTOM STYLES --- -->
-    <link rel="stylesheet" href="../src/css/style.css" />
+    <link rel="stylesheet" href="src/css/style.css" />
 
     <!-- Tailwind Configuration -->
     <script>
@@ -89,8 +86,8 @@
               brand: { 500: "#3b82f6", 600: "#2563eb" },
             },
             fontFamily: {
-              sans: ["Vazirmatn", "Inter", "system-ui", "sans-serif"],
-              mono: ["Fira Code", "monospace"],
+              sans: ["Segoe UI", "Helvetica Neue", "system-ui", "sans-serif"],
+              mono: ["Consolas", "ui-monospace", "SFMono-Regular", "monospace"],
             },
           },
         },
@@ -135,7 +132,7 @@
           class="relative h-40 bg-gradient-to-br from-blue-600 to-indigo-700 flex items-center justify-center overflow-hidden"
         >
           <div
-            class="absolute inset-0 bg-[url('https://www.transparenttextures.com/patterns/cubes.png')] opacity-10"
+            class="absolute inset-0 texture-overlay opacity-20"
           ></div>
           <i
             data-lucide="zap"
@@ -494,73 +491,45 @@
             <div class="font-grid">
               <button
                 class="font-btn active"
-                data-font="'Vazirmatn', sans-serif"
-                style="font-family: 'Vazirmatn'"
+                data-font="'Segoe UI', 'Helvetica Neue', system-ui, sans-serif"
+                style="font-family: 'Segoe UI', 'Helvetica Neue', system-ui, sans-serif"
               >
-                Vazirmatn (وزیر)
+                Segoe UI
               </button>
               <button
                 class="font-btn"
-                data-font="'Lalezar', display"
-                style="font-family: 'Lalezar'"
+                data-font="'Helvetica Neue', system-ui, sans-serif"
+                style="font-family: 'Helvetica Neue', system-ui, sans-serif"
               >
-                Lalezar (لاله)
+                Helvetica Neue
               </button>
               <button
                 class="font-btn"
-                data-font="'Amiri', serif"
-                style="font-family: 'Amiri'"
+                data-font="'Georgia', serif"
+                style="font-family: 'Georgia', serif"
               >
-                Amiri (امیری)
+                Georgia
               </button>
               <button
                 class="font-btn"
-                data-font="'Lateef', cursive"
-                style="font-family: 'Lateef'; font-size: 1.2em"
+                data-font="'Tahoma', sans-serif"
+                style="font-family: 'Tahoma', sans-serif"
               >
-                Lateef (لطیف)
+                Tahoma
               </button>
               <button
                 class="font-btn"
-                data-font="'Katibeh', display"
-                style="font-family: 'Katibeh'; font-size: 1.1em"
+                data-font="'Verdana', sans-serif"
+                style="font-family: 'Verdana', sans-serif"
               >
-                Katibeh (کتیبه)
+                Verdana
               </button>
               <button
                 class="font-btn"
-                data-font="'Scheherazade New', serif"
-                style="font-family: 'Scheherazade New'; font-size: 1.1em"
+                data-font="'Courier New', monospace"
+                style="font-family: 'Courier New', monospace"
               >
-                Scheherazade
-              </button>
-              <button
-                class="font-btn"
-                data-font="'Rubik', sans-serif"
-                style="font-family: 'Rubik'"
-              >
-                Rubik (روبیک)
-              </button>
-              <button
-                class="font-btn"
-                data-font="'Noto Naskh Arabic', serif"
-                style="font-family: 'Noto Naskh Arabic'"
-              >
-                Noto Naskh
-              </button>
-              <button
-                class="font-btn"
-                data-font="'Lemonada', display"
-                style="font-family: 'Lemonada'; font-size: 0.8em"
-              >
-                Lemonada
-              </button>
-              <button
-                class="font-btn"
-                data-font="'Rakkas', display"
-                style="font-family: 'Rakkas'"
-              >
-                Rakkas (رقاص)
+                Courier New
               </button>
             </div>
           </div>
@@ -621,8 +590,8 @@
     </div>
 
     <!-- --- SCRIPTS --- -->
-    <script src="https://cdn.plyr.io/3.7.8/plyr.polyfilled.js"></script>
-    <script src="https://unpkg.com/lucide@latest"></script>
-    <script type="module" src="../src/js/app.js"></script>
+    <script src="assets/vendor/js/plyr.polyfilled.js"></script>
+    <script src="assets/vendor/js/lucide.js"></script>
+    <script type="module" src="src/js/app.js"></script>
   </body>
 </html>

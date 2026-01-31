@@ -1,0 +1,12 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" role="img" aria-label="FluxPlayer icon">
+  <defs>
+    <linearGradient id="g" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#3b82f6" />
+      <stop offset="100%" stop-color="#8b5cf6" />
+    </linearGradient>
+  </defs>
+  <rect width="512" height="512" rx="96" fill="#0f172a" />
+  <rect x="40" y="40" width="432" height="432" rx="80" fill="url(#g)" opacity="0.9" />
+  <path d="M210 164c-10 0-18 8-18 18v148c0 14 15 23 28 17l136-74c13-7 13-26 0-33l-136-74c-2-1-6-2-10-2z" fill="#fff" opacity="0.92" />
+  <circle cx="170" cy="256" r="22" fill="#e0f2fe" opacity="0.9" />
+</svg>
